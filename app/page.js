@@ -8,9 +8,7 @@ import { toast } from "react-toastify";
 import Nav from "@/app/components/Nav";
 
 
-export const metadata = {
-    title: "Tmdb Homepage",
-};
+
 
 const page = () => {
     const dispatch = useDispatch();
