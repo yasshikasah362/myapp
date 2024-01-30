@@ -1,95 +1,63 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import Link from "next/link";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { asyncaddmovies } from "@/store/Actions/movieAction";
+import { changepage, removeerrors } from "@/store/Reducers/movieReducer";
+import { toast } from "react-toastify";
+import Nav from "@/app/components/Nav";
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
+
+export const metadata = {
+    title: "Tmdb Homepage",
+};
+
+const page = () => {
+    const dispatch = useDispatch();
+    const { movies, page, errors } = useSelector((state) => state.movieReducer);
+    console.log(errors);
+
+    if (errors.length > 0) {
+        errors.map((e, i) => {
+            toast.error(e);
+        });
+        dispatch(removeerrors());
+    }
+
+    useEffect(() => {
+        // if (movies.length === 0) dispatch(asyncaddmovies());
+        dispatch(asyncaddmovies());
+    }, [page]);
+
+    return (
         <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+          <Nav/>
+            <hr />
+            <div className="d-flex container p-5 mt-3 flex-wrap">
+                {movies.map((m, i) => {
+                    console.log(m);
+                    return (
+                      <div class="card" style={{width: '18rem',margin:'auto'}}>
+  <img src={`https://image.tmdb.org/t/p/w500${m.poster_path}`} class="card-img-top" alt="..."/>
+  <div class="card-body">
+    <h5 class="card-title">Lorem Ipsum</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <Link href={`/movies/${m.id}`}>{m.title}</Link>
+  </div>
+</div>
+                    );
+                })}
+            </div>
+            <hr />
+            <div className=" text-center paginate">
+                <button style={{width:'100px', height:'30px', borderRadius:'20px'}} onClick={() => dispatch(changepage(-1))}>
+                    Previous
+                </button>
+                <span className="h1">{page}</span>
+                <button style={{width:'100px', height:'30px', borderRadius:'20px'}} onClick={() => dispatch(changepage(1))}>Next</button>
+            </div>
         </div>
-      </div>
+    );
+};
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default page;

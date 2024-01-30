@@ -1,0 +1,18 @@
+.show_main{
+    height: 70vh;
+    width: 100%;
+    /* background-color: red; */
+}
+.bg_image{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+.show_overlay{
+    height: 70vh;
+    width: 100%;
+    position: absolute;
+    background-color: #1e20355c;
+    z-index: 999;
+}
+
